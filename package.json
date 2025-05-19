@@ -1,0 +1,70 @@
+{
+  "name": "@leyyo/api",
+  "version": "1.0.0",
+  "description": "Http Rest Api",
+  "keywords": [
+    "http",
+    "api",
+    "rest"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leyyonet/api.git"
+  },
+  "bugs": {
+    "email": "mustafayelmer@gmail.com",
+    "url": "https://github.com/leyyonet/api/issues"
+  },
+  "homepage": "https://github.com/leyyonet/api#readme",
+  "author": {
+    "name": "Mustafa Yelmer",
+    "email": "mustafayelmer@gmail.com"
+  },
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "clear": "rimraf dist",
+    "lint": "eslint src/**/*.ts",
+    "asset": "node -r ts-node/register commands/assets.ts",
+    "build": "npm run clear && tsc && npm run asset",
+    "test": "jest --config=jest.json",
+    "test:watch": "jest --watch --config=jest.json",
+    "test:coverage": "jest --config=jest.json --coverage --coverageDirectory=coverage",
+    "ts": "node -r ts-node/register src/sample.ts",
+    "~publish": "npmaaa run build && npm publish -access=public"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^28.1.4",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-jsdoc": "^50.6.9",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^28.1.2",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "test": "^3.3.0",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@leyyo/call": "file:../call",
+    "@leyyo/common": "file:../common",
+    "@leyyo/core": "file:../core",
+    "@leyyo/http": "file:../http",
+    "@leyyo/middleware": "file:../middleware",
+    "@leyyo/pipe": "file:../pipe",
+    "@leyyo/validator": "file:../validator",
+    "@leyyo/cast": "file:../cast",
+    "express": "^4.21.2"
+  }
+}
