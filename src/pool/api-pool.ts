@@ -1,7 +1,8 @@
 import {ApiCallLambda, ApiEndpointLambda, ApiGetParamLambda, ApiPoolLike} from "./index-types";
 import {decoratorPool, Fqn, lifecycle} from "@leyyo/core";
 import {
-    $descriptor,
+    $assert,
+    $descriptor, $dev,
     $is,
     $log,
     $repo,
@@ -38,6 +39,7 @@ class ApiPool implements ApiPoolLike {
     private readonly _controller: ControllerProcessorLike;
     private readonly _endpoint: EndpointProcessorLike;
     private readonly _parameter: ParameterProcessorLike;
+    private _port: number = 80;
 
     constructor() {
         this._attachment = new AttachmentProcessor(this);
@@ -46,6 +48,10 @@ class ApiPool implements ApiPoolLike {
         this._controller = new ControllerProcessor(this);
         this._endpoint = new EndpointProcessor(this);
         this._parameter = new ParameterProcessor(this);
+
+        lifecycle.onInitialize(FQN_PCK, () => this.start());
+        lifecycle.onValidate(FQN_PCK, () => this.bind());
+        lifecycle.onProcess(FQN_PCK, () => this.process());
     }
     clear(): void {
         lifecycle.clearMessages();
@@ -90,6 +96,11 @@ class ApiPool implements ApiPoolLike {
         this._controller.fetchClasses();
         this._attachment.fetchAttachments();
         this._endpoint.fetchMethods();
+    }
+    bind() {
+        this._application.bindInstance();
+        this._controller.bindInstances();
+        this._endpoint.bindMethods();
     }
 
     protected _checkPath(path1: string|RegExp, path2: string|RegExp): string|RegExp {
@@ -263,6 +274,32 @@ class ApiPool implements ApiPoolLike {
         });
 
         return doc;
+    }
+    port(port: number): this {
+        $assert.positiveInteger(port, () => $dev.opt({field: 'port'}));
+        this._port = port;
+        return this;
+    }
+    protected process(): void {
+        const appDoc = {
+            port: this._port,
+            native: express(),
+            router: Router(),
+            fullPath: $is.empty(this._application.item.contextPath) ? '/' : String(this._application.item.contextPath),
+            path: this._application.item.contextPath,
+            endpoints: new Map(),
+            controllers: new Map(),
+        } as ApplicationDoc;
+        this._application.item.controllers
+            .forEach(attachment => {
+                const controllerDoc = this._completeController(appDoc.fullPath, attachment);
+                appDoc.native.use(controllerDoc.path, controllerDoc.router);
+            });
+
+        appDoc.native.listen(appDoc.port, () => {
+            console.log(`Server running on port ${appDoc.port}`);
+        });
+
     }
     complete(port: number): void {
         const appDoc = {

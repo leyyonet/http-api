@@ -13,6 +13,7 @@ export interface ControllerProcessorLike {
     newItem(classRef: ClassReflectionLike, path: string): ControllerItem;
     clear(): void;
 
+    bindInstances(): void;
     fetchClasses(): void;
 }
 

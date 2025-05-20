@@ -1,5 +1,7 @@
 import {$assert, $dev} from "@leyyo/common";
-import {decoratorPool, Provider} from "@leyyo/core";
+import {decoratorPool} from "@leyyo/core";
+import {Provider} from "@leyyo/injection";
+
 import {FQN_PCK} from "../../internal";
 
 export interface ControllerOpt {

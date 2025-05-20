@@ -5,6 +5,7 @@ import {Controller, ControllerOpt} from "../decorators";
 import {$descriptor, $dev, $log, $repo} from "@leyyo/common";
 import {httpSigner} from "@leyyo/http";
 import {FQN_PCK} from "../internal";
+import {injectionPool} from "../../../injection";
 
 export class ControllerProcessor implements ControllerProcessorLike {
     private readonly logger = $log.create(ControllerProcessor);
@@ -30,7 +31,11 @@ export class ControllerProcessor implements ControllerProcessorLike {
         this.allClasses.clear();
         this.pendingControllers.clear();
     }
-
+    bindInstances(): void {
+        this.allClasses.forEach(controllerItem => {
+            controllerItem.instance = injectionPool.getInstance(controllerItem.classRef.creator, true);
+        });
+    }
     fetchClasses(): void {
         const id = decoratorPool.get(Controller, true).asIdentifier;
         id

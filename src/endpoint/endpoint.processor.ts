@@ -2,8 +2,9 @@ import {EndpointItem, EndpointProcessorLike} from "./index.types";
 import {ApiPoolLike} from "../pool";
 import {decoratorPool, lifecycle, PropertyReflectionLike} from "@leyyo/core";
 import {httpSigner, Method, MethodOpt} from "@leyyo/http";
-import {$descriptor, $dev, $log, $repo, $test, List} from "@leyyo/common";
+import {$assert, $descriptor, $dev, $log, $repo, $test, List} from "@leyyo/common";
 import {FQN_PCK} from "../internal";
+import {injectionPool} from "../../../injection";
 
 
 export class EndpointProcessor implements EndpointProcessorLike {
@@ -36,6 +37,13 @@ export class EndpointProcessor implements EndpointProcessorLike {
 
     clear(): void {
         this.allEndpoints.clear();
+    }
+    bindMethods(): void {
+        this.allEndpoints.forEach(item => {
+            const instance = injectionPool.getInstance(item.methodRef.clazz.creator, true);
+            item.callable = instance[item.methodRef.name];
+            $assert.func(item.callable, () => $dev.desc(item.methodRef, {}));
+        });
     }
     fetchMethods(): void {
         const id = decoratorPool.get(Method, true).asIdentifier;

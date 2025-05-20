@@ -1,7 +1,7 @@
 import {ClassReflectionLike, DecoInstanceLike, PropertyReflectionLike} from "@leyyo/core";
 import {HttpMethod, HttpParameter, HttpPlaceExtended} from "@leyyo/http";
 import {ParameterItem} from "../parameter";
-import {DevOpt, List} from "@leyyo/common";
+import {AsyncFnc, DevOpt, List} from "@leyyo/common";
 import e from "express";
 import {ControllerDoc} from "../controller";
 import {ApplicationDoc} from "../application";
@@ -11,6 +11,7 @@ export interface EndpointProcessorLike {
     newItem(methodRef: PropertyReflectionLike, path: string): EndpointItem;
     clear(): void;
     fetchMethods(): void;
+    bindMethods(): void;
 }
 
 export interface EndpointDoc {
@@ -23,6 +24,7 @@ export interface EndpointItem {
     inController?: boolean;
     methodRef: PropertyReflectionLike;
     ins: DecoInstanceLike;
+    callable?: AsyncFnc;
 
     classRef: ClassReflectionLike;
     methods: Array<HttpMethod>;

@@ -7,6 +7,7 @@ import {httpSigner} from "@leyyo/http";
 import {FQN_PCK} from "../internal";
 import e from "express";
 import express, {Router} from "express";
+import {injectionPool} from "../../../injection/src";
 
 export class ApplicationProcessor implements ApplicationProcessorLike {
     private readonly logger = $log.create(ApplicationProcessor);
@@ -41,6 +42,9 @@ export class ApplicationProcessor implements ApplicationProcessorLike {
         });
     }
 
+    bindInstance(): void {
+        this.item.instance = injectionPool.getInstance(this.item.classRef.creator, true);
+    }
     fetchClasses(): void {
         let found = false;
         const id = decoratorPool.get(HttpApp, true).asIdentifier;

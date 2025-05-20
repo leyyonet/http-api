@@ -11,6 +11,7 @@ import {AttachmentProcessorLike} from "../attachment";
 export interface ApiPoolLike {
     start(): void;
     complete(port: number): void;
+    port(port: number): this;
 
     clear(): void;
     get attachment(): AttachmentProcessorLike;

@@ -12,6 +12,7 @@ export interface ApplicationProcessorLike {
     newItem(): ApplicationItem;
     clear(): void;
     complete(port: number): void;
+    bindInstance(): void;
     fetchClasses(): void;
 }
 

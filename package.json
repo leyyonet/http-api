@@ -57,9 +57,10 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@leyyo/call": "file:../call",
     "@leyyo/common": "file:../common",
     "@leyyo/core": "file:../core",
+    "@leyyo/injection": "file:../injection",
+    "@leyyo/call": "file:../call",
     "@leyyo/http": "file:../http",
     "@leyyo/middleware": "file:../middleware",
     "@leyyo/pipe": "file:../pipe",
