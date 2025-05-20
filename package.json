@@ -1,5 +1,5 @@
 {
-  "name": "@leyyo/api",
+  "name": "@leyyo/http-api",
   "version": "1.0.0",
   "description": "Http Rest Api",
   "keywords": [
@@ -9,13 +9,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leyyonet/api.git"
+    "url": "git+https://github.com/leyyonet/http-api.git"
   },
   "bugs": {
     "email": "mustafayelmer@gmail.com",
-    "url": "https://github.com/leyyonet/api/issues"
+    "url": "https://github.com/leyyonet/http-api/issues"
   },
-  "homepage": "https://github.com/leyyonet/api#readme",
+  "homepage": "https://github.com/leyyonet/http-api#readme",
   "author": {
     "name": "Mustafa Yelmer",
     "email": "mustafayelmer@gmail.com"
