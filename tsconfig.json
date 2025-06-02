@@ -17,8 +17,7 @@
     "node_modules",
     "dist",
     "src/assets",
-    "_backup",
-    "src/**/*.spec.ts",
-    "test/**/*.spec.ts"
+    "src/_backup",
+    "src/**/*.spec.ts"
   ]
 }

@@ -1,5 +1,5 @@
 import {SecurityRequirementDoc} from "../open-api";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev, Dict} from "@leyyo/common";
 
@@ -20,7 +20,7 @@ export function ApiSecurity(nameOrDoc: string | SecurityRequirementDoc, items?: 
 }
 
 const idMethod = decoratorPool.newId<Opt, Dict, P>(ApiSecurity)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method')
     .processor((ins, p) => {
         let opt = {} as Opt;

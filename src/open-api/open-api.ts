@@ -55,34 +55,6 @@ export interface LicenseDoc {
 
 }
 
-
-/*
-servers:
-  - url: https://development.gigantic-server.com/v1
-    description: Development server
-  - url: https://staging.gigantic-server.com/v1
-    description: Staging server
-  - url: https://api.gigantic-server.com/v1
-    description: Production server
-
-servers:
-  - url: https://{username}.gigantic-server.com:{port}/{basePath}
-    description: The production API server
-    variables:
-      username:
-        # note! no enum here means it is an open value
-        default: demo
-        description: A user-specific subdomain. Use `demo` for a free sandbox environment.
-      port:
-        enum:
-          - '8443'
-          - '443'
-        default: '8443'
-      basePath:
-        # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
-        default: v2
-
- * */
 /**
  * An object representing a Server.
  * @extendible
@@ -102,7 +74,8 @@ export interface ServerDoc {
     description?: string;
 
     /**
-     * A map between a variable name and its value. The value is used for substitution in the server's URL template.
+     * A map between a variable name and its value.
+     * The value is used for substitution in the server's URL template.
      * */
     variables?: Record<string, ServerVariableDoc>;
 }
@@ -332,7 +305,14 @@ export interface ReferenceDoc {
 export interface SchemaDoc {
     nullable?: boolean;
     discriminator?: DiscriminatorDoc;
+
+    /**
+     * Read-only properties are included in responses but not in requests
+     * */
     readOnly?: boolean;
+    /**
+     * Write-only properties may be sent in requests but not in responses
+     * */
     writeOnly?: boolean;
     xml?: XmlDoc;
     externalDocs?: ExternalDocumentationDoc;
@@ -344,29 +324,92 @@ export interface SchemaDoc {
     oneOf?: (SchemaDoc | ReferenceDoc)[];
     anyOf?: (SchemaDoc | ReferenceDoc)[];
     not?: SchemaDoc | ReferenceDoc;
-    items?: SchemaDoc | ReferenceDoc;
-    properties?: Record<string, SchemaDoc | ReferenceDoc>;
+
     additionalProperties?: SchemaDoc | ReferenceDoc | boolean;
     patternProperties?: SchemaDoc | ReferenceDoc | any;
     description?: string;
     format?: string;
     default?: any;
     title?: string;
+
+    // region string
+    maxLength?: number;
+    minLength?: number;
+    pattern?: string;
+    // endregion string
+
+    // region number
     multipleOf?: number;
     maximum?: number;
     exclusiveMaximum?: boolean;
     minimum?: number;
     exclusiveMinimum?: boolean;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
+    // endregion number
+
+    // region array
+    /**
+     * The value of items is a schema that describes the type and format of array items.
+     *
+     * Notes:
+     * - type should be "array"
+     * - Can be nested
+     * */
+    items?: SchemaDoc | ReferenceDoc;
+    /**
+     * Maximum length of an array
+     *
+     * Notes:
+     * - type should be "array"
+     * */
     maxItems?: number;
+    /**
+     * Minimum length of an array
+     *
+     * Notes:
+     * - type should be "array"
+     * */
     minItems?: number;
+
+    /**
+     * To specify that all items in the array must be unique
+     *
+     * Notes:
+     * - type should be "array"
+     * */
     uniqueItems?: boolean;
+    // endregion array
+
+    // region object
+    /**
+     * It's used to define the object properties
+     * */
+    properties?: Record<string, SchemaDoc | ReferenceDoc>;
+
+    /**
+     * Maximum size of an object items
+     *
+     * Notes:
+     * - type should be "object"
+     * */
     maxProperties?: number;
+
+    /**
+     * Minimum size of an object items
+     *
+     * Notes:
+     * - type should be "object"
+     * */
     minProperties?: number;
+
+    /**
+     * By default, all object properties are optional.
+     * You can specify the required properties in the required list
+     * */
     required?: string[];
+    // endregion object
+
     enum?: any[];
+
     'x-enumNames'?: string[];
 }
 
@@ -432,3 +475,79 @@ export type ParameterStyle =
     | 'spaceDelimited'
     | 'pipeDelimited'
     | 'deepObject';
+
+
+/**
+ * for map
+ *
+ * additionalProperties:
+ *   type: string
+ *
+ * ------
+ *
+ * for discriminator
+ *
+ * components:
+ *   responses:
+ *     sampleObjectResponse:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             oneOf:
+ *               - $ref: '#/components/schemas/Object1'
+ *               - $ref: '#/components/schemas/Object2'
+ *               - $ref: 'sysObject.json#/sysObject'
+ *             discriminator:
+ *               propertyName: objectType
+ *               mapping:
+ *                 obj1: '#/components/schemas/Object1'
+ *                 obj2: '#/components/schemas/Object2'
+ *                 system: 'sysObject.json#/sysObject'
+ *   …
+ *   schemas:
+ *     Object1:
+ *       type: object
+ *       required:
+ *         - objectType
+ *       properties:
+ *         objectType:
+ *           type: string
+ *       …
+ *     Object2:
+ *       type: object
+ *       required:
+ *         - objectType
+ *       properties:
+ *         objectType:
+ *           type: string
+ *       …
+ * */
+
+
+/*
+servers:
+  - url: https://development.gigantic-server.com/v1
+    description: Development server
+  - url: https://staging.gigantic-server.com/v1
+    description: Staging server
+  - url: https://api.gigantic-server.com/v1
+    description: Production server
+
+servers:
+  - url: https://{username}.gigantic-server.com:{port}/{basePath}
+    description: The production API server
+    variables:
+      username:
+        # note! no enum here means it is an open value
+        default: demo
+        description: A user-specific subdomain. Use `demo` for a free sandbox environment.
+      port:
+        enum:
+          - '8443'
+          - '443'
+        default: '8443'
+      basePath:
+        # open meaning there is the opportunity to use special base paths as assigned by the provider, default is `v2`
+        default: v2
+
+ * */

@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {AsContext} from "./as-context";
 
 interface Opt {
@@ -12,4 +12,4 @@ export function AsCtx(field?: string): ParameterDecorator {
 }
 
 const cloned = decoratorPool.newClone<Opt>(AsCtx, AsContext)
-    .fqn(FQN_PCK);
+    .fqn(FQN);

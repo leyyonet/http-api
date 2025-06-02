@@ -4,15 +4,15 @@ import {ControllerItem} from "../controller";
 export interface AttachmentProcessorLike {
     attachedFields: Set<PropertyReflectionLike>;
 
-    newItem(item: ControllerItem, path: string, fieldRef?: PropertyReflectionLike): AttachmentItem;
+    newItem(item: ControllerItem, fieldRef?: PropertyReflectionLike): AttachmentItem;
 
     clear(): void;
 
     fetchAttachments(): void;
+    printDeploy(): void;
 }
 
 export interface AttachmentItem {
-    item: ControllerItem;
+    controllerItem: ControllerItem;
     fieldRef?: PropertyReflectionLike;
-    path: string;
 }

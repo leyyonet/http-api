@@ -1,4 +1,4 @@
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {SchemaDoc} from "../open-api";
 import {ApiDocTypeAny} from "./index-types";
@@ -21,7 +21,7 @@ export function ApiBody(opt: ApiBodyDoc): ClassDecorator | MethodDecorator {
 }
 
 const id = decoratorPool.newId<ApiBodyDoc>(ApiBody)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method')
     .processor((ins, p) => {
         p.mediaType = $assert.textOptional(p.mediaType, () => $dev.desc(ins, {field: 'mediaType'}));

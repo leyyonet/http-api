@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {Body} from "./body";
 
 export function Payload(): ParameterDecorator {
@@ -8,4 +8,4 @@ export function Payload(): ParameterDecorator {
 }
 
 const cloned = decoratorPool.newClone(Payload, Body)
-    .fqn(FQN_PCK);
+    .fqn(FQN);

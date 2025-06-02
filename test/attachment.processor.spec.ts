@@ -1,10 +1,10 @@
 import {strict as assert} from 'assert';
 import {describe, it} from "node:test";
-import {$test} from "@leyyo/common";
-import {apiPool, AttachController, Controller, HttpApp, IgnoreControllers} from "../index";
+import {$deploy, $test} from "@leyyo/common";
+import {Fqn, reflectionPool} from "@leyyo/core";
 
-import {FQN_PCK} from "../internal";
-import {Fqn, lifecycle, reflectionPool} from "@leyyo/core";
+import {apiPool, AttachController, Controller, HttpApp, IgnoreControllers} from "../src";
+import {FQN} from "../src/internal";
 
 describe('4** >> Attachment', () => {
     describe('40* >> Class', () => {
@@ -37,7 +37,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasWarning(FQN_PCK, 400), true);
+                assert.equal($deploy.has(FQN, 400), 'warning');
             });
         });
         it($test.title(401, '[e] Attached class is not reflected'), () => {
@@ -68,7 +68,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 401));
+                    assert.equal((error as Error).message, $test.code(FQN, 401));
                     return true;
                 });
         });
@@ -95,7 +95,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 402));
+                    assert.equal((error as Error).message, $test.code(FQN, 402));
                     return true;
                 });
         });
@@ -106,7 +106,7 @@ describe('4** >> Attachment', () => {
             assert.throws(() => {
 
 
-                    @Fqn(FQN_PCK)
+                    @Fqn(FQN)
                     class Class403Attached {
                     }
 
@@ -126,7 +126,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 403));
+                    assert.equal((error as Error).message, $test.code(FQN, 403));
                     return true;
                 });
         });
@@ -162,7 +162,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 404));
+                    assert.equal((error as Error).message, $test.code(FQN, 404));
                     return true;
                 });
         });
@@ -194,7 +194,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 405));
+                    assert.equal((error as Error).message, $test.code(FQN, 405));
                     return true;
                 });
         });
@@ -220,7 +220,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasInfo(FQN_PCK, 406), true);
+                assert.equal($deploy.has(FQN, 406), 'info');
             });
         });
         it($test.title(407, '[e] Host class is not in controller list'), () => {
@@ -251,7 +251,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 407));
+                    assert.equal((error as Error).message, $test.code(FQN, 407));
                     return true;
                 });
         });
@@ -282,7 +282,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasInfo(FQN_PCK, 408), true);
+                assert.equal($deploy.has(FQN, 408), 'info');
             });
         });
         it($test.title(409, '[e] Host class is not in controller or app list'), () => {
@@ -312,7 +312,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 409));
+                    assert.equal((error as Error).message, $test.code(FQN, 409));
                     return true;
                 });
         });
@@ -350,7 +350,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasWarning(FQN_PCK, 450), true);
+                assert.equal($deploy.has(FQN, 450), 'warning');
             });
         });
         it($test.title(451, '[e] Attached class is not reflected'), () => {
@@ -383,7 +383,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 451));
+                    assert.equal((error as Error).message, $test.code(FQN, 451));
                     return true;
                 });
         });
@@ -412,7 +412,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 452));
+                    assert.equal((error as Error).message, $test.code(FQN, 452));
                     return true;
                 });
         });
@@ -423,7 +423,7 @@ describe('4** >> Attachment', () => {
             assert.throws(() => {
 
 
-                    @Fqn(FQN_PCK)
+                    @Fqn(FQN)
                     class Class453Attached {
                     }
 
@@ -445,7 +445,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 453));
+                    assert.equal((error as Error).message, $test.code(FQN, 453));
                     return true;
                 });
         });
@@ -485,7 +485,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 454));
+                    assert.equal((error as Error).message, $test.code(FQN, 454));
                     return true;
                 });
         });
@@ -519,7 +519,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 455));
+                    assert.equal((error as Error).message, $test.code(FQN, 455));
                     return true;
                 });
         });
@@ -546,7 +546,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasInfo(FQN_PCK, 456), true);
+                assert.equal($deploy.has(FQN, 456), 'info');
             });
         });
         it($test.title(457, '[e] Host class is not in controller list'), () => {
@@ -579,7 +579,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 457));
+                    assert.equal((error as Error).message, $test.code(FQN, 457));
                     return true;
                 });
         });
@@ -611,7 +611,7 @@ describe('4** >> Attachment', () => {
                 apiPool.controller.fetchClasses();
                 apiPool.attachment.fetchAttachments();
 
-                assert.equal(lifecycle.hasInfo(FQN_PCK, 458), true);
+                assert.equal($deploy.has(FQN, 458), 'info');
             });
         });
         it($test.title(459, '[e] Host class is not in controller or app list'), () => {
@@ -643,7 +643,7 @@ describe('4** >> Attachment', () => {
                     apiPool.attachment.fetchAttachments();
                 },
                 error => {
-                    assert.equal((error as Error).message, $test.code(FQN_PCK, 459));
+                    assert.equal((error as Error).message, $test.code(FQN, 459));
                     return true;
                 });
         });

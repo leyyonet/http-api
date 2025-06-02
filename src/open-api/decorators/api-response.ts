@@ -1,4 +1,4 @@
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {ClassLike, Func} from "@leyyo/common";
 import {SchemaDoc} from "../open-api";
@@ -18,7 +18,7 @@ export function ApiResponse(opt: Opt): ClassDecorator | MethodDecorator {
 }
 
 const id = decoratorPool.newId<Opt>(ApiResponse)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method')
     .processor((ins, p) => {
         ins.set(p)

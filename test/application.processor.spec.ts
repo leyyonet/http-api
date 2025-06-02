@@ -1,25 +1,10 @@
 import {strict as assert} from 'assert';
 import {describe, it} from "node:test";
-import {lifecycle, reflectionPool} from "@leyyo/core";
-import {Get} from "@leyyo/http";
-import {$test} from "@leyyo/common";
-import {
-    apiPool,
-    AsApp, AsContext, AsCtx,
-    AsReq,
-    AsRequest, AsRes, AsResponse,
-    Body,
-    Cookie,
-    EndpointItem,
-    Header, HttpApp, IgnoreControllers,
-    Param,
-    Queries,
-    Query
-} from "../index";
+import {$deploy, $test} from "@leyyo/common";
 
-import {FQN_PCK} from "../internal";
-import {PropertyReflectionLike} from "@leyyo/core";
-import {List} from "@leyyo/common";
+import {apiPool, HttpApp, IgnoreControllers} from "../src";
+
+import {FQN} from "../src/internal";
 
 describe('10* >> Application', () => {
     it($test.title(100, '[i] Ignored application should not be evaluated'), () => {
@@ -40,8 +25,8 @@ describe('10* >> Application', () => {
                 apiPool.application.fetchClasses();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 103)); // after info
-                assert.equal(lifecycle.hasInfo(FQN_PCK, 100), true);
+                assert.equal((error as Error).message, $test.code(FQN, 103)); // after info
+                assert.equal($deploy.has(FQN, 100), 'info');
                 return true;
             });
     });
@@ -63,7 +48,7 @@ describe('10* >> Application', () => {
                 apiPool.application.fetchClasses();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 101));
+                assert.equal((error as Error).message, $test.code(FQN, 101));
                 return true;
             });
     });
@@ -80,7 +65,7 @@ describe('10* >> Application', () => {
                 apiPool.ignore.fetchClasses();
                 apiPool.application.fetchClasses();
 
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 102), true);
+            assert.equal($deploy.has(FQN, 102), 'info');
             });
     });
     it($test.title(103, '[e] There is not any application which is defined'), () => {
@@ -100,7 +85,7 @@ describe('10* >> Application', () => {
                 apiPool.application.fetchClasses();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 103));
+                assert.equal((error as Error).message, $test.code(FQN, 103));
                 return true;
             });
     });

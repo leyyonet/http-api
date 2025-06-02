@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {Param} from "./param";
 
 interface Opt {
@@ -12,4 +12,4 @@ export function Prm(field?: string): ParameterDecorator {
 }
 
 const cloned = decoratorPool.newClone<Opt>(Prm, Param)
-    .fqn(FQN_PCK);
+    .fqn(FQN);

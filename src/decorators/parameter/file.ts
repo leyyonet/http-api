@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {MonoParamOpt} from "./index.types";
 import {helper} from "./parameter.helper";
 
@@ -9,7 +9,7 @@ export function File(field?: string): ParameterDecorator {
 }
 
 const id = decoratorPool.newId<MonoParamOpt>(File)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('parameter')
     .rules('no-multiple')
     .keywords('api')

@@ -1,12 +1,8 @@
-import {
-    ParameterControlFlag,
-    ParameterItem,
-    ParameterProcessorLike,
-} from "./index.types";
+import {ParameterControlFlag, ParameterItem, ParameterProcessorLike,} from "./index.types";
 import {ApiPoolLike} from "../pool";
 import {HttpParameter, HttpPlaceExtended} from "@leyyo/http";
 import {$assert, $dev, $is, $log, Func, MethodTested, Tested} from "@leyyo/common";
-import {DecoInstanceLike, Fqn, lifecycle, ParameterReflectionLike, PropertyReflectionLike} from "@leyyo/core";
+import {DecoInstanceLike,Fqn, ParameterReflectionLike, PropertyReflectionLike} from "@leyyo/core";
 import {
     AsApp,
     AsContext,
@@ -19,17 +15,18 @@ import {
     Files,
     Header,
     Headers,
+    MonoParamOpt,
     Param,
     Params,
+    PolyGivenParams,
     Queries,
     Query
 } from "../decorators";
 import {EndpointItem} from "../endpoint";
-import {FQN_PCK} from "../internal";
-import {MonoParamOpt, PolyGivenParams} from "../decorators";
+import {FQN} from "../internal";
 
 @Tested()
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 export class ParameterProcessor implements ParameterProcessorLike {
 
     // region properties
@@ -123,13 +120,13 @@ export class ParameterProcessor implements ParameterProcessorLike {
     protected _checkNotAllowed(paramRefList: Array<ParameterReflectionLike>): void {
         paramRefList.forEach(paramRef => {
             if (paramRef.hasDefault) {
-                throw $dev.developerError2(FQN_PCK, 600, {
+                throw $dev.developerError2(FQN, 600, {
                     issue: 'Default parameter is not allowed in endpoint',
                     desc: paramRef.description
                 });
             }
             if (paramRef.isVariadic) {
-                throw $dev.developerError2(FQN_PCK, 601, {
+                throw $dev.developerError2(FQN, 601, {
                     issue: 'Variadic parameter is not allowed in endpoint',
                     desc: paramRef.description
                 });
@@ -187,7 +184,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
     @MethodTested(602)
     protected _only1Deco(item: ParameterItem): void {
         if (item.flags.includes('has-deco')) {
-            throw $dev.developerError2(FQN_PCK, 602, {issue: 'A Parameter can use only one place decorator'});
+            throw $dev.developerError2(FQN, 602, {issue: 'A Parameter can use only one place decorator'});
         }
         item.flags.push('has-deco');
     }
@@ -195,7 +192,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
     @MethodTested(603)
     protected _multipleUsedDeco(item: ParameterItem, ins: DecoInstanceLike, singleUsed: Array<Func>): boolean {
         if (singleUsed.includes(ins.identifier.fn)) {
-            lifecycle.addWarning(FQN_PCK, 603, {
+            this.logger.deploy.$warning(FQN, 603, {
                 issue: `Anonymous decorators can be used only one time`,
                 desc: ins.description,
                 item: item.ref.description,
@@ -253,7 +250,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 if (endpointItem.usableNames.includes(item.resource)) {
                     endpointItem.usableNames.delete(item.resource);
                 } else {
-                    throw $dev.developerError2(FQN_PCK, 610, {
+                    throw $dev.developerError2(FQN, 610, {
                         issue: 'Path value does not exist in endpoint path',
                         kind: item.kind,
                         current: item.resource,
@@ -266,7 +263,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 endpointItem.uniqueNames[item.kind] = [];
             }
             if (endpointItem.uniqueNames[item.kind].includes(item.resource)) {
-                throw $dev.developerError2(FQN_PCK, 612, {
+                throw $dev.developerError2(FQN, 612, {
                     issue: 'Resource is reserved by another parameter',
                     kind: item.kind,
                     resource: item.resource,
@@ -294,7 +291,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 const others = endpointItem.parameters
                     .filter(ep => indexes.includes(ep.ref.index))
                     .map(ep => `${ep.ref.name}#${ep.ref.index}`);
-                lifecycle.addWarning(FQN_PCK, 646, {
+                this.logger.deploy.$warning(FQN, 646, {
                     issue: 'Parameter focuses all values, but others too',
                     index: item.ref.index,
                     place: item.place,
@@ -307,7 +304,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
             const values = {} as Record<string, string>;
             for (const [key, value] of Object.entries(item.resourceMap)) {
                 if (endpointItem.reservedNames[item.kind].includes(key)) {
-                    lifecycle.addWarning(FQN_PCK, 647, {
+                    this.logger.deploy.$warning(FQN, 647, {
                         issue: 'Key is also focused by another parameter',
                         kind: item.kind,
                         key,
@@ -319,7 +316,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 }
                 if (key !== value) {
                     if (values[value] !== undefined) {
-                        lifecycle.addWarning(FQN_PCK, 648, {
+                        this.logger.deploy.$warning(FQN, 648, {
                             issue: 'Value is also reserved by another key in same parameter',
                             kind: item.kind,
                             key,
@@ -346,11 +343,11 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 delete param.field;
             }
             else {
-                throw $dev.developerError2(FQN_PCK, 613, {issue: 'Only true can be used in place of false', field: 'isRemoteSnakeCase', desc: item.ref.description});
+                throw $dev.developerError2(FQN, 613, {issue: 'Only true can be used in place of false', field: 'isRemoteSnakeCase', desc: item.ref.description});
             }
         }
         else {
-            $assert.textOptional(param.field, () => [FQN_PCK, 614, {field: 'field', desc: item.ref.description}]);
+            $assert.textOptional(param.field, () => [FQN, 614, {field: 'field', desc: item.ref.description}]);
         }
         if (!param.field) {
             if (param.field && ['header', 'cookie'].includes(item.place)) {
@@ -376,7 +373,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 item.all = true;
                 return;
             }
-            throw $dev.developerError2(FQN_PCK, 630, {issue: 'Only true can be used for all keys', desc: item.ref.description});
+            throw $dev.developerError2(FQN, 630, {issue: 'Only true can be used for all keys', desc: item.ref.description});
         }
 
         const uniqueValues = [] as Array<string>;
@@ -384,15 +381,15 @@ export class ParameterProcessor implements ParameterProcessorLike {
 
         // map case
         if ($is.bareObject(param.allOrFields)) {
-            $assert.booleanOptional(param.snakeOrSupport, () => [FQN_PCK, 631, {issue: 'Support multi mapping flag should be boolean or undefined (not given)', field: 'supportMultiMapping', desc: item.ref.description}]);
+            $assert.booleanOptional(param.snakeOrSupport, () => [FQN, 631, {issue: 'Support multi mapping flag should be boolean or undefined (not given)', field: 'supportMultiMapping', desc: item.ref.description}]);
             const supportMultiMapping = param.snakeOrSupport;
 
             let index = 0;
             for (const [key,value] of Object.entries(param.allOrFields)) {
-                $assert.text(key, () => [FQN_PCK, 632, {issue: 'Keys in the map, should be text (string, trimmed and not empty)', field: `map.key.#${index}/${key}`, desc: item.ref.description}]);
-                $assert.text(value, () => [FQN_PCK, 633, {issue: 'Keys in the map, should be text (string, trimmed and not empty)', field: `map.value.#${index}/${key}`, desc: item.ref.description}]);
+                $assert.text(key, () => [FQN, 632, {issue: 'Keys in the map, should be text (string, trimmed and not empty)', field: `map.key.#${index}/${key}`, desc: item.ref.description}]);
+                $assert.text(value, () => [FQN, 633, {issue: 'Keys in the map, should be text (string, trimmed and not empty)', field: `map.value.#${index}/${key}`, desc: item.ref.description}]);
                 if (uniqueValues.includes(value) && !supportMultiMapping) {
-                    lifecycle.addWarning(FQN_PCK, 634, {
+                    this.logger.deploy.$warning(FQN, 634, {
                         issue: 'Parameter focuses all values, but others too',
                         key, value,
                         index: item.ref.index,
@@ -408,20 +405,20 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 index++;
             }
             if (Object.keys(item.resourceMap).length < 1) {
-                throw $dev.developerError2(FQN_PCK, 635, {issue: 'Keys map is empty', desc: item.ref.description});
+                throw $dev.developerError2(FQN, 635, {issue: 'Keys map is empty', desc: item.ref.description});
             }
             return;
         }
 
         // array case
-        $assert.booleanOptional(param.snakeOrSupport, () => [FQN_PCK, 640, {issue: 'Is remote snake case flag should be boolean or undefined (not given)', field: 'isRemoteSnakeCase', desc: item.ref.description}]);
-        $assert.textArray(param.allOrFields, () => [FQN_PCK, 641, {issue: 'Keys array should be a text array', field: 'fields', desc: item.ref.description}]);
+        $assert.booleanOptional(param.snakeOrSupport, () => [FQN, 640, {issue: 'Is remote snake case flag should be boolean or undefined (not given)', field: 'isRemoteSnakeCase', desc: item.ref.description}]);
+        $assert.textArray(param.allOrFields, () => [FQN, 641, {issue: 'Keys array should be a text array', field: 'fields', desc: item.ref.description}]);
         const isRemoteSnakeCase = param.snakeOrSupport;
 
         const fields = param.allOrFields as Array<string>;
         fields.forEach((key, index) => {
             if (uniqueKeys.includes(key)) {
-                lifecycle.addWarning(FQN_PCK, 642, {
+                this.logger.deploy.$warning(FQN, 642, {
                     issue: 'Duplicated values in fields array',
                     key, index,
                     desc: item.ref.description
@@ -520,7 +517,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
         if (emptyKinds.length > 0) {
             const notAttended = emptyKinds
                 .map(item => item.ref.description);
-            throw $dev.developerError2(FQN_PCK, 661, {
+            throw $dev.developerError2(FQN, 661, {
                 issue: 'Some parameters are attended to any resource',
                 desc: endpointItem.methodRef.description,
                 notAttended
@@ -541,7 +538,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
                             this._appendFlag(item, 'resource-from-path'); // 671
                             this._appendFlag(item, 'use-first-value');
                         } else {
-                            throw $dev.developerError2(FQN_PCK, 670, {
+                            throw $dev.developerError2(FQN, 670, {
                                 issue: 'There is not any path param in the endpoint',
                                 desc: item.ref.description
                             });
@@ -563,7 +560,7 @@ export class ParameterProcessor implements ParameterProcessorLike {
         if (endpointItem.usableNames.length > 0) {
             const remainingPaths = endpointItem.usableNames.filter(path => !endpointItem.ignorableNames.includes(path));
             if (remainingPaths.length > 0) {
-                lifecycle.addWarning(FQN_PCK, 610, {
+                this.logger.deploy.$warning(FQN, 610, {
                     issue: `Endpoint has remaining path values which are not used by any parameter`,
                     desc: endpointItem.methodRef.description,
                     remainingPaths
@@ -632,4 +629,5 @@ export class ParameterProcessor implements ParameterProcessorLike {
                 this.forMethod(methodRef, endpointItem);
             });
     }
+    printDeploy(): void {}
 }

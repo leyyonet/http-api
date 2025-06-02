@@ -1,5 +1,5 @@
 import {ServerDoc, ServerVariableDoc} from "../open-api";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev, $is, Dict} from "@leyyo/common";
 
@@ -20,7 +20,7 @@ export function ApiServer(url: string, description?: string, variables?: Record<
 }
 
 const idId = decoratorPool.newId<Opt, Dict, P>(ApiServer)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method')
     .processor((ins, p) => {
         const opt = {} as Opt;

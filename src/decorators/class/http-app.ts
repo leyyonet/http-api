@@ -1,7 +1,7 @@
 import {$assert, $dev} from "@leyyo/common";
 import {decoratorPool} from "@leyyo/core";
 import {Provider} from "@leyyo/injection";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 
 export interface HttpAppOpt {
     contextPath: string|RegExp;
@@ -22,7 +22,7 @@ export function HttpApp(contextPath?: string|RegExp): ClassDecorator {
 
 const idProvider = decoratorPool.getIdentifier(Provider);
 const id = decoratorPool.newId<HttpAppOpt>(HttpApp)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .rules('no-inherited', 'no-multiple')
     .keywords('api')

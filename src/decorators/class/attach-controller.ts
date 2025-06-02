@@ -1,6 +1,6 @@
 import {$assert, $dev, ClassLike} from "@leyyo/common";
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 
 export interface AttachSubControllerOpt {
     controller: ClassLike;
@@ -25,7 +25,7 @@ export function AttachController(controller: ClassLike, path?: string|RegExp, in
 }
 
 const id = decoratorPool.newId<AttachSubControllerOpt>(AttachController)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'field')
     .keywords('api')
     .processor((ins, p) => {

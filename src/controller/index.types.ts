@@ -1,10 +1,9 @@
 import {ClassReflectionLike, PropertyReflectionLike} from "@leyyo/core";
-import {DevOpt, Obj} from "@leyyo/common";
-import {HttpMethod} from "@leyyo/http";
-import {EndpointDoc, EndpointItem} from "../endpoint";
+import {Obj} from "@leyyo/common";
+import {EndpointItem} from "../endpoint";
 import {AttachmentItem} from "../attachment";
-import e from "express";
-import {ApplicationDoc, RouterDoc} from "../application";
+import {RouterItem} from "../router";
+import {HttpControllerDoc, HttpMethod} from "@leyyo/http";
 
 export interface ControllerProcessorLike {
     allClasses: Map<ClassReflectionLike, ControllerItem>;
@@ -13,17 +12,20 @@ export interface ControllerProcessorLike {
     newItem(classRef: ClassReflectionLike, path: string): ControllerItem;
     clear(): void;
 
-    bindInstances(): void;
     fetchClasses(): void;
+
+    bindItem(item: ControllerItem, parent: ControllerItem, all: AllPaths): void;
+    printDeploy(): void;
 }
 
-export interface ControllerDoc extends RouterDoc {
-}
-
-export interface ControllerItem {
-    classRef: ClassReflectionLike,
+export interface ControllerItem extends HttpControllerDoc {
     instance: Obj;
-    path: string|RegExp;
     endpoints: Map<PropertyReflectionLike, EndpointItem>;
     controllers: Map<ClassReflectionLike, AttachmentItem>;
+    parent?: ControllerItem;
+}
+
+export interface AllPaths {
+    routers: Map<string, Array<ControllerItem>>;
+    endpoints: Map<HttpMethod, Map<string, Array<EndpointItem>>>;
 }

@@ -1,13 +1,13 @@
 import {ParameterReflectionLike, PropertyReflectionLike} from "@leyyo/core";
 import {HttpParameter, HttpPlaceExtended} from "@leyyo/http";
 import {EndpointItem} from "../endpoint";
-import {DevOpt} from "@leyyo/common";
 
 export interface ParameterProcessorLike {
     newItem(ref: ParameterReflectionLike): ParameterItem;
     clear(): void;
     fetchParameters(): void;
     forMethod(methodRef: PropertyReflectionLike, endpointItem: EndpointItem): void;
+    printDeploy(): void;
 }
 
 export interface ParameterItem {

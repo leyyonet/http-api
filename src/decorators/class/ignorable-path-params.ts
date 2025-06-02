@@ -1,6 +1,6 @@
 import {$assert, $dev} from "@leyyo/common";
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 
 export interface IgnorablePathParamsOpt {
     params: Array<string>;
@@ -19,7 +19,7 @@ export function IgnorablePathParams(...params: Array<string>): ClassDecorator {
 }
 
 const id = decoratorPool.newId<IgnorablePathParamsOpt>(IgnorablePathParams)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .keywords('api')
     .processor((ins, p) => {

@@ -9,10 +9,6 @@ import {IgnoreProcessorLike} from "../ignore";
 import {AttachmentProcessorLike} from "../attachment";
 
 export interface ApiPoolLike {
-    start(): void;
-    complete(port: number): void;
-    port(port: number): this;
-
     clear(): void;
     get attachment(): AttachmentProcessorLike;
     get ignore(): IgnoreProcessorLike;
@@ -26,6 +22,4 @@ export interface ApiPoolLike {
 }
 
 export type ApiGetParamLambda = <T = any>(req: e.Request, res: e.Response) => T;
-
 export type ApiCallLambda = (ctx: ContextLike, values: Array<any>) => Promise<Array<any>>|Array<any>;
-export type ApiEndpointLambda = (...values: Array<any>) => Promise<any>;

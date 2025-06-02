@@ -1,4 +1,4 @@
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev, $is, Dict} from "@leyyo/common";
 
@@ -40,7 +40,7 @@ export function ApiOperation(summaryOrDoc: string | ApiOperationOpt): MethodDeco
 }
 
 const id = decoratorPool.newId<ApiOperationOpt, Dict, P>(ApiOperation)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('method')
     .rules('no-multiple')
     .processor((ins, p) => {

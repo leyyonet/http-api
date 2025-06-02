@@ -1,13 +1,18 @@
 import {strict as assert} from 'assert';
 import {describe, it} from "node:test";
-import {lifecycle, reflectionPool} from "@leyyo/core";
+import {PropertyReflectionLike, reflectionPool} from "@leyyo/core";
 import {Get} from "@leyyo/http";
-import {$test} from "@leyyo/common";
+import {$deploy, $test} from "@leyyo/common";
+
 import {
     apiPool,
-    AsApp, AsContext, AsCtx,
+    AsApp,
+    AsContext,
+    AsCtx,
     AsReq,
-    AsRequest, AsRes, AsResponse,
+    AsRequest,
+    AsRes,
+    AsResponse,
     Body,
     Cookie,
     EndpointItem,
@@ -15,10 +20,8 @@ import {
     Param,
     Queries,
     Query
-} from "../index";
-
-import {FQN_PCK} from "../internal";
-import {PropertyReflectionLike} from "@leyyo/core";
+} from "../src";
+import {FQN} from "../src/internal";
 
 function newEndpointItem(ref: PropertyReflectionLike, paths?: Array<string>, ignorable?: Array<string>): EndpointItem {
     const endpointItem = apiPool.endpoint.newItem(ref, '');
@@ -55,7 +58,7 @@ describe('Constraints', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 600));
+                assert.equal((error as Error).message, $test.code(FQN, 600));
                 return true;
             });
     });
@@ -76,7 +79,7 @@ describe('Constraints', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 601));
+                assert.equal((error as Error).message, $test.code(FQN, 601));
                 return true;
             });
     });
@@ -100,7 +103,7 @@ describe('Kind from decorator', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 602));
+                assert.equal((error as Error).message, $test.code(FQN, 602));
                 return true;
             });
     });
@@ -144,7 +147,7 @@ describe('Anonymous decorators', () => {
             const ref = reflectionPool.get(Controller603F).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 603), true); // payload index: 1
+            assert.equal($deploy.has(FQN, 603), 'warning'); // payload index: 1
         });
     });
     it($test.title(603, 'Application can be used only one time'), () => {
@@ -163,7 +166,7 @@ describe('Anonymous decorators', () => {
             const ref = reflectionPool.get(Controller603A).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 603), true); // app index: 1
+            assert.equal($deploy.has(FQN, 603), 'warning'); // app index: 1
         });
     });
     it($test.title(603, 'Request can be used only one time'), () => {
@@ -182,7 +185,7 @@ describe('Anonymous decorators', () => {
             const ref = reflectionPool.get(Controller603B).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 603), true); // req index: 1
+            assert.equal($deploy.has(FQN, 603), 'warning'); // req index: 1
         });
     });
     it($test.title(603, 'Response can be used only one time'), () => {
@@ -201,7 +204,7 @@ describe('Anonymous decorators', () => {
             const ref = reflectionPool.get(Controller603C).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 603), true); // res index: 1
+            assert.equal($deploy.has(FQN, 603), 'warning'); // res index: 1
         });
     });
     it($test.title(603, 'Context can be used only one time'), () => {
@@ -220,7 +223,7 @@ describe('Anonymous decorators', () => {
             const ref = reflectionPool.get(Controller603D).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 603), true); // ctx index: 1
+            assert.equal($deploy.has(FQN, 603), 'warning'); // ctx index: 1
         });
     });
 });
@@ -239,7 +242,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 610));
+                assert.equal((error as Error).message, $test.code(FQN, 610));
                 return true;
             });
     });
@@ -259,7 +262,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 610)); // @bound
+                assert.equal((error as Error).message, $test.code(FQN, 610)); // @bound
                 return true;
             });
     });
@@ -279,7 +282,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 612));
+                assert.equal((error as Error).message, $test.code(FQN, 612));
                 return true;
             });
     });
@@ -299,7 +302,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 613));
+                assert.equal((error as Error).message, $test.code(FQN, 613));
                 return true;
             });
     });
@@ -319,7 +322,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 614));
+                assert.equal((error as Error).message, $test.code(FQN, 614));
                 return true;
             });
     });
@@ -339,7 +342,7 @@ describe('Mono resource in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 614));
+                assert.equal((error as Error).message, $test.code(FQN, 614));
                 return true;
             });
     });
@@ -361,7 +364,7 @@ describe('Poly Resources (Map) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 630));
+                assert.equal((error as Error).message, $test.code(FQN, 630));
                 return true;
             });
     });
@@ -381,7 +384,7 @@ describe('Poly Resources (Map) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 631));
+                assert.equal((error as Error).message, $test.code(FQN, 631));
                 return true;
             });
     });
@@ -401,7 +404,7 @@ describe('Poly Resources (Map) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 632));
+                assert.equal((error as Error).message, $test.code(FQN, 632));
                 return true;
             });
     });
@@ -421,7 +424,7 @@ describe('Poly Resources (Map) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 633));
+                assert.equal((error as Error).message, $test.code(FQN, 633));
                 return true;
             });
     });
@@ -445,7 +448,7 @@ describe('Poly Resources (Map) in place decorators', () => {
             const ref = reflectionPool.get(Class634).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 634), true); // addressInfo index: 0
+            assert.equal($deploy.has(FQN, 634), 'warning'); // addressInfo index: 0
         });
     });
     it($test.title(635, 'Keys map is empty'), () => {
@@ -462,10 +465,10 @@ describe('Poly Resources (Map) in place decorators', () => {
                 const ref = reflectionPool.get(Class635).getInstanceProperty('get');
                 const endpointItem = newEndpointItem(ref);
                 apiPool.parameter.forMethod(ref, endpointItem);
-                assert.equal(lifecycle.hasWarning(FQN_PCK, 635), true); // addressInfo index: 0
+                assert.equal($deploy.has(FQN, 635), 'warning'); // addressInfo index: 0
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 635));
+                assert.equal((error as Error).message, $test.code(FQN, 635));
                 return true;
             });
     });
@@ -488,7 +491,7 @@ describe('Poly Resources (Array) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 640));
+                assert.equal((error as Error).message, $test.code(FQN, 640));
                 return true;
             });
     });
@@ -508,7 +511,7 @@ describe('Poly Resources (Array) in place decorators', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 641));
+                assert.equal((error as Error).message, $test.code(FQN, 641));
                 return true;
             });
     });
@@ -526,7 +529,7 @@ describe('Poly Resources (Array) in place decorators', () => {
             const ref = reflectionPool.get(Class642).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 642), true); // addressInfo index: 0
+            assert.equal($deploy.has(FQN, 642), 'warning'); // addressInfo index: 0
         });
     });
 });
@@ -546,7 +549,7 @@ describe('Poly Resources in place decorators', () => {
             const ref = reflectionPool.get(Class646).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 646), true); // queries index: 1
+            assert.equal($deploy.has(FQN, 646), 'warning'); // queries index: 1
         });
     });
     it($test.title(647, 'Key is also focused by another parameter'), () => {
@@ -565,7 +568,7 @@ describe('Poly Resources in place decorators', () => {
             const ref = reflectionPool.get(Class647).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 647), true); // queries index: 1
+            assert.equal($deploy.has(FQN, 647), 'warning'); // queries index: 1
         });
     });
     it($test.title(648, 'Value is also reserved by another key in same parameter'), () => {
@@ -583,7 +586,7 @@ describe('Poly Resources in place decorators', () => {
             const ref = reflectionPool.get(Class648).getInstanceProperty('get');
             const endpointItem = newEndpointItem(ref);
             apiPool.parameter.forMethod(ref, endpointItem);
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 648), true); // queries index: 1
+            assert.equal($deploy.has(FQN, 648), 'warning'); // queries index: 1
         });
     });
 });
@@ -928,7 +931,7 @@ describe('Not attended parameters', () => {
                 apiPool.parameter.forMethod(ref, endpointItem);
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 661));
+                assert.equal((error as Error).message, $test.code(FQN, 661));
                 return true;
             });
     });

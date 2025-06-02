@@ -3,26 +3,27 @@ import {ApiPoolLike} from "../pool";
 import {
     ClassReflectionLike,
     DecoInstanceLike,
-    decoratorPool, lifecycle,
+    decoratorPool,
     PropertyReflectionLike,
     reflectionPool
 } from "@leyyo/core";
 import {AttachController, AttachSubControllerOpt} from "../decorators";
-import {$descriptor, $dev, $log, $repo} from "@leyyo/common";
+import {$dev, $log, $repo} from "@leyyo/common";
 import {httpSigner} from "@leyyo/http";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {ControllerItem} from "../controller";
+import {apiHelper} from "../helper";
 
 export class AttachmentProcessor implements AttachmentProcessorLike {
     private readonly logger = $log.create(AttachmentProcessor);
     attachedFields: Set<PropertyReflectionLike>;
 
     constructor(private pool: ApiPoolLike) {
-        this.attachedFields = $repo.newSet(FQN_PCK, 'attachedFields');
+        this.attachedFields = $repo.newSet(FQN, 'attachedFields');
     }
 
-    newItem(item: ControllerItem, path: string|RegExp, fieldRef?: PropertyReflectionLike): AttachmentItem {
-        return {item, fieldRef, path} as AttachmentItem;
+    newItem(controllerItem: ControllerItem, fieldRef?: PropertyReflectionLike): AttachmentItem {
+        return {controllerItem, fieldRef} as AttachmentItem;
     }
 
     clear(): void {
@@ -49,7 +50,7 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
         const opt = ins.getValue<AttachSubControllerOpt>();
         // attached is ignored
         if (httpSigner.is(opt.controller, 'http.ignored')) {
-            lifecycle.addWarning(FQN_PCK, 400, {
+            this.logger.deploy.$warning(FQN, 400, {
                 message: 'Attached controller is ignored',
                 host: classRef.name,
                 attached: opt.controller.name,
@@ -59,14 +60,14 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
 
         const attachedRef = reflectionPool.get(opt.controller, false);
         if (!attachedRef) {
-            throw $dev.developerError2(FQN_PCK, 401, {
+            throw $dev.developerError2(FQN, 401, {
                 issue: 'Attached class is not reflected',
                 host: classRef.name,
                 attached: opt.controller.name
             });
         }
         if (attachedRef === classRef) {
-            throw $dev.developerError2(FQN_PCK, 402, {
+            throw $dev.developerError2(FQN, 402, {
                 issue: 'Host class attached itself, circular usage',
                 host: classRef.name,
                 attached: attachedRef.name
@@ -76,39 +77,41 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
             return;
         }
         if (!httpSigner.is(attachedRef.creator, 'http.controller')) {
-            throw $dev.developerError2(FQN_PCK, 403, {
+            throw $dev.developerError2(FQN, 403, {
                 issue: 'Attached class is not signed as a controller',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
         if (httpSigner.isExt(attachedRef.creator, 'http.attached')) {
-            throw $dev.developerError2(FQN_PCK, 404, {
+            throw $dev.developerError2(FQN, 404, {
                 issue: 'Attached is already signed as attached',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
 
-        const attachedItem = this.pool.controller.allClasses.get(attachedRef);
-        if (!attachedItem) {
-            throw $dev.developerError2(FQN_PCK, 405, {
+        const controllerItem = this.pool.controller.allClasses.get(attachedRef);
+        if (!controllerItem) {
+            throw $dev.developerError2(FQN, 405, {
                 issue: 'Attached class is not in controller list',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
         if (opt.invalidatePath) {
-            attachedItem.path = opt.path;
-            opt.path = undefined;
+            controllerItem.path = apiHelper.checkPath(opt.path);
+        }
+        else {
+            controllerItem.path = apiHelper.mergePaths(opt.path, controllerItem.path);
         }
         if (httpSigner.is(classRef.creator, 'http.app')) {
             this.pool.controller.pendingControllers.delete(attachedRef);
             this.pool.application.item
-                .controllers.set(attachedRef, this.newItem(attachedItem, opt.path));
+                .controllers.set(attachedRef, this.newItem(controllerItem));
             httpSigner.appendExt(attachedRef.creator, 'http.attached');
 
-            lifecycle.addInfo(FQN_PCK, 406, {
+            this.logger.deploy.$info(FQN, 406, {
                 message: 'Application attached a controller',
                 host: classRef.name,
                 attached: attachedRef.name,
@@ -118,7 +121,7 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
         if (httpSigner.is(classRef.creator, 'http.controller')) {
             const controllerItem = this.pool.controller.allClasses.get(classRef);
             if (!controllerItem) {
-                throw $dev.developerError2(FQN_PCK, 407, {
+                throw $dev.developerError2(FQN, 407, {
                     issue: 'Host class is not in controller list',
                     host: classRef.name,
                     attached: attachedRef.name
@@ -126,17 +129,17 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
             }
             this.pool.controller.pendingControllers.delete(attachedRef);
             controllerItem
-                .controllers.set(attachedRef, this.newItem(attachedItem, opt.path));
+                .controllers.set(attachedRef, this.newItem(controllerItem));
             httpSigner.appendExt(attachedRef.creator, 'http.attached');
 
-            lifecycle.addInfo(FQN_PCK, 408, {
+            this.logger.deploy.$info(FQN, 408, {
                 message: 'Controller attached an another controller',
                 host: classRef.name,
                 attached: attachedRef.name,
             });
             return;
         }
-        throw $dev.developerError2(FQN_PCK, 409, {
+        throw $dev.developerError2(FQN, 409, {
             issue: 'Host class is not in controller or app list',
             host: classRef.name,
             attached: attachedRef.name
@@ -151,7 +154,7 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
         const opt = ins.getValue<AttachSubControllerOpt>();
         // attached is ignored
         if (httpSigner.is(opt.controller, 'http.ignored')) {
-            lifecycle.addWarning(FQN_PCK, 450, {
+            this.logger.deploy.$warning(FQN, 450, {
                 message: 'Attached controller is ignored',
                 host: classRef.name,
                 attached: opt.controller.name,
@@ -161,14 +164,14 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
 
         const attachedRef = reflectionPool.get(opt.controller, false);
         if (!attachedRef) {
-            throw $dev.developerError2(FQN_PCK, 451, {
+            throw $dev.developerError2(FQN, 451, {
                 issue: 'Attached class is not reflected',
                 host: classRef.name,
                 attached: opt.controller.name
             });
         }
         if (attachedRef === classRef) {
-            throw $dev.developerError2(FQN_PCK, 452, {
+            throw $dev.developerError2(FQN, 452, {
                 issue: 'Host class attached itself, circular usage',
                 host: classRef.name,
                 attached: attachedRef.name
@@ -178,43 +181,45 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
             return;
         }
         if (!httpSigner.is(attachedRef.creator, 'http.controller')) {
-            throw $dev.developerError2(FQN_PCK, 453, {
+            throw $dev.developerError2(FQN, 453, {
                 issue: 'Attached class is not signed as a controller',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
         if (httpSigner.isExt(attachedRef.creator, 'http.attached')) {
-            throw $dev.developerError2(FQN_PCK, 454, {
+            throw $dev.developerError2(FQN, 454, {
                 issue: 'Attached is already signed as attached',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
 
-        const attachedItem = this.pool.controller.allClasses.get(attachedRef);
-        if (!attachedItem) {
-            throw $dev.developerError2(FQN_PCK, 455, {
+        const controllerItem = this.pool.controller.allClasses.get(attachedRef);
+        if (!controllerItem) {
+            throw $dev.developerError2(FQN, 455, {
                 issue: 'Attached class is not in controller list',
                 host: classRef.name,
                 attached: attachedRef.name
             });
         }
         if (opt.invalidatePath) {
-            attachedItem.path = opt.path;
-            opt.path = undefined;
+            controllerItem.path = apiHelper.checkPath(opt.path);
+        }
+        else {
+            controllerItem.path = apiHelper.mergePaths(opt.path, controllerItem.path);
         }
         if (httpSigner.is(classRef.creator, 'http.app')) {
             this.pool.controller.pendingControllers.delete(attachedRef);
             this.pool.application.item
-                .controllers.set(attachedRef, this.newItem(attachedItem, opt.path, fieldRef));
+                .controllers.set(attachedRef, this.newItem(controllerItem, fieldRef));
             httpSigner.appendExt(attachedRef.creator, 'http.attached');
             if (!this.attachedFields.has(fieldRef)) {
                 this.attachedFields.add(fieldRef);
                 httpSigner.appendExt(fieldRef, 'http-attached-field');
             }
 
-            lifecycle.addInfo(FQN_PCK, 456, {
+            this.logger.deploy.$info(FQN, 456, {
                 message: 'Application attached a controller',
                 host: classRef.name,
                 attached: attachedRef.name, desc: ins.description,
@@ -224,7 +229,7 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
         if (httpSigner.is(classRef.creator, 'http.controller')) {
             const controllerItem = this.pool.controller.allClasses.get(classRef);
             if (!controllerItem) {
-                throw $dev.developerError2(FQN_PCK, 457, {
+                throw $dev.developerError2(FQN, 457, {
                     issue: 'Host class is not in controller list',
                     host: classRef.name,
                     attached: attachedRef.name
@@ -232,25 +237,25 @@ export class AttachmentProcessor implements AttachmentProcessorLike {
             }
             this.pool.controller.pendingControllers.delete(attachedRef);
             controllerItem
-                .controllers.set(attachedRef, this.newItem(attachedItem, opt.path, fieldRef));
+                .controllers.set(attachedRef, this.newItem(controllerItem, fieldRef));
             httpSigner.appendExt(attachedRef.creator, 'http.attached');
             if (!this.attachedFields.has(fieldRef)) {
                 this.attachedFields.add(fieldRef);
                 httpSigner.appendExt(fieldRef, 'http-attached-field');
             }
-            lifecycle.addInfo(FQN_PCK, 458, {
+            this.logger.deploy.$info(FQN, 458, {
                 message: 'Controller attached an another controller',
                 host: classRef.name,
                 attached: attachedRef.name, desc: ins.description,
             });
             return;
         }
-        throw $dev.developerError2(FQN_PCK, 459, {
+        throw $dev.developerError2(FQN, 459, {
             issue: 'Host class is not in controller or app list',
             host: classRef.name,
             attached: attachedRef.name,
             desc: ins.description
         });
     }
-
+    printDeploy(): void {}
 }

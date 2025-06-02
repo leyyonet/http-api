@@ -1,5 +1,5 @@
 import {LicenseDoc} from "../open-api";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev} from "@leyyo/common";
 
@@ -11,7 +11,7 @@ export function ApiLicense(license: Opt): ClassDecorator {
 }
 
 const id = decoratorPool.newId<Opt>(ApiLicense)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .processor((ins, p) => {
         p.name = $assert.text(p.name, () => $dev.desc(ins, {field: 'name'}));

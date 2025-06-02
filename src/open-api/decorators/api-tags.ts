@@ -1,6 +1,6 @@
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev, $is, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {ExternalDocumentationDoc, TagDoc} from "../open-api";
 
 interface Opt {
@@ -20,7 +20,7 @@ export function ApiTags(...tags: Array<string | TagDoc>): ClassDecorator | Metho
 }
 
 const id = decoratorPool.newId<Opt, Dict, P>(ApiTags)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method')
     .rules('iterable')
     .processor((ins, p) => {

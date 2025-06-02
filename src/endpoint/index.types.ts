@@ -1,34 +1,32 @@
-import {ClassReflectionLike, DecoInstanceLike, PropertyReflectionLike} from "@leyyo/core";
-import {HttpMethod, HttpParameter, HttpPlaceExtended} from "@leyyo/http";
+import {DecoInstanceLike, PropertyReflectionLike} from "@leyyo/core";
+import {HttpEndpointDoc, HttpMethod, HttpParameter, HttpPlaceExtended} from "@leyyo/http";
+import {Func, List} from "@leyyo/common";
+
 import {ParameterItem} from "../parameter";
-import {AsyncFnc, DevOpt, List} from "@leyyo/common";
-import e from "express";
-import {ControllerDoc} from "../controller";
-import {ApplicationDoc} from "../application";
+import {AllPaths, ControllerItem} from "../controller";
+import {RouterItem} from "../router";
 
 export interface EndpointProcessorLike {
     allEndpoints: Map<PropertyReflectionLike, EndpointItem>;
+
     newItem(methodRef: PropertyReflectionLike, path: string): EndpointItem;
+
     clear(): void;
+
     fetchMethods(): void;
-    bindMethods(): void;
+
+    bindItem(item: EndpointItem, parent: ControllerItem, all: AllPaths): void;
+
+    printDeploy(): void;
 }
 
-export interface EndpointDoc {
-    path: string|RegExp;
-    fullPath: string;
-    method: HttpMethod;
-    controller: ControllerDoc;
-}
-export interface EndpointItem {
-    inController?: boolean;
-    methodRef: PropertyReflectionLike;
+export interface EndpointItem extends HttpEndpointDoc {
     ins: DecoInstanceLike;
-    callable?: AsyncFnc;
+    callable?: Func;
 
-    classRef: ClassReflectionLike;
-    methods: Array<HttpMethod>;
-    path: string|RegExp;
+    parent: ControllerItem;
+    children: Map<HttpMethod, RouterItem>;
+
 
     parameters: Array<ParameterItem>;
 
@@ -48,7 +46,4 @@ export interface EndpointItem {
     // 1 - cloned from pathNames
     // 2 - must be empty at the end
     usableNames: List<string>;
-}
-export interface EndpointKindMap {
-
 }

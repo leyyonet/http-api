@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {PolyGivenParams} from "./index.types";
 
 export function Cookies(): ParameterDecorator;
@@ -12,7 +12,7 @@ export function Cookies(allOrFields?: true | Array<string> | Record<string, stri
 }
 
 const id = decoratorPool.newId<PolyGivenParams>(Cookies)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('parameter')
     .rules('no-multiple')
     .keywords('api')

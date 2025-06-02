@@ -1,4 +1,4 @@
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 import {decoratorPool} from "@leyyo/core";
 import {$assert, $dev, Dict} from "@leyyo/common";
 
@@ -19,7 +19,7 @@ export function ApiExtension(key: string, value: any): ClassDecorator | MethodDe
 }
 
 const id = decoratorPool.newId<Opt, Dict, P>(ApiExtension)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class', 'method', 'field', 'parameter')
     .processor((ins, p) => {
         p.key = $assert.text(p.key, () => $dev.desc(ins, {field: 'key'}));

@@ -1,10 +1,9 @@
 import {strict as assert} from 'assert';
 import {describe, it} from "node:test";
-import {$test} from "@leyyo/common";
-import {apiPool, Controller, HttpApp, IgnoreControllers} from "../index";
+import {$deploy, $test} from "@leyyo/common";
 
-import {FQN_PCK} from "../internal";
-import {lifecycle} from "../../../core/src";
+import {apiPool, Controller, HttpApp, IgnoreControllers} from "../src";
+import {FQN} from "../src/internal";
 
 describe('20* >> Ignore', () => {
     it($test.title(200, '[w] Ignored class is not reflected'), () => {
@@ -22,7 +21,7 @@ describe('20* >> Ignore', () => {
 
             apiPool.ignore.fetchClasses();
 
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 200), true);
+            assert.equal($deploy.has(FQN, 200), 'warning');
         });
     });
     it($test.title(201, '[w] Ignored class is already ignored'), () => {
@@ -40,7 +39,7 @@ describe('20* >> Ignore', () => {
             }
 
             apiPool.ignore.fetchClasses();
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 201), true);
+            assert.equal($deploy.has(FQN, 201), 'warning');
         });
     });
     it($test.title(202, '[s] Application is ignored'), () => {
@@ -59,7 +58,7 @@ describe('20* >> Ignore', () => {
 
             apiPool.ignore.fetchClasses();
 
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 202), true);
+            assert.equal($deploy.has(FQN, 202), 'info');
         });
     });
     it($test.title(203, '[s] Controller is ignored'), () => {
@@ -77,7 +76,7 @@ describe('20* >> Ignore', () => {
             }
 
             apiPool.ignore.fetchClasses();
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 203), true);
+            assert.equal($deploy.has(FQN, 203), 'info');
         });
     });
 });

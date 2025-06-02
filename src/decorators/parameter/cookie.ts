@@ -1,6 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
-import {helper} from "./parameter.helper";
+import {FQN} from "../../internal";
 import {MonoParamOpt} from "./index.types";
 
 export function Cookie(field?: string): ParameterDecorator {
@@ -9,7 +8,7 @@ export function Cookie(field?: string): ParameterDecorator {
 }
 
 const id = decoratorPool.newId<MonoParamOpt>(Cookie)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('parameter')
     .rules('no-multiple')
     .keywords('api')

@@ -1,5 +1,5 @@
 import {decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 
 export function AsApp(): ParameterDecorator {
     return (clazz, propertyKey, index) =>
@@ -7,7 +7,7 @@ export function AsApp(): ParameterDecorator {
 }
 
 const id = decoratorPool.newId(AsApp)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('parameter')
     .rules('no-multiple')
     .keywords('api')

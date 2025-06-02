@@ -2,7 +2,7 @@ import {$assert, $dev} from "@leyyo/common";
 import {decoratorPool} from "@leyyo/core";
 import {Provider} from "@leyyo/injection";
 
-import {FQN_PCK} from "../../internal";
+import {FQN} from "../../internal";
 
 export interface ControllerOpt {
     path: string|RegExp;
@@ -24,7 +24,7 @@ export function Controller(path?: string|RegExp): ClassDecorator {
 
 const idProvider = decoratorPool.getIdentifier(Provider);
 const id = decoratorPool.newId<ControllerOpt>(Controller)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .rules('no-inherited', 'no-multiple')
     .keywords('api')

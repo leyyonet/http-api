@@ -1,11 +1,9 @@
-import {ClassReflectionLike, PropertyReflectionLike} from "@leyyo/core";
-import {DevOpt, Obj} from "@leyyo/common";
-import {HttpMethod} from "@leyyo/http";
-import {EndpointItem} from "../endpoint";
+import {ClassReflectionLike} from "@leyyo/core";
 
 export interface IgnoreProcessorLike {
     ignoredClasses: Set<ClassReflectionLike>;
 
     clear(): void;
     fetchClasses(): void;
+    printDeploy(): void;
 }

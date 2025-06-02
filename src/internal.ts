@@ -1,1 +1,1 @@
-export const FQN_PCK = 'leyyo.http-api';
+export const FQN = 'leyyo.http_api';

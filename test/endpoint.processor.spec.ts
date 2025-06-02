@@ -1,11 +1,11 @@
 import {strict as assert} from 'assert';
 import {beforeEach, describe, it} from "node:test";
-import {decoratorPool, lifecycle, reflectionPool} from "@leyyo/core";
+import {decoratorPool,reflectionPool} from "@leyyo/core";
 import {Get, httpSigner, Method, Post} from "@leyyo/http";
-import {$test} from "@leyyo/common";
-import {apiPool, Controller, HttpApp} from "../index";
+import {$deploy, $test} from "@leyyo/common";
 
-import {FQN_PCK} from "../internal";
+import {apiPool, Controller, HttpApp} from "../src";
+import {FQN} from "../src/internal";
 
 describe('50* >> Endpoint', () => {
     beforeEach(() => decoratorPool.get(Method).clearInstances());
@@ -36,7 +36,7 @@ describe('50* >> Endpoint', () => {
             apiPool.attachment.fetchAttachments();
             apiPool.endpoint.fetchMethods();
 
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 500), true);
+            assert.equal($deploy.has(FQN, 500), 'warning');
         });
     });
     it($test.title(501, '[w] Method is already signed as an endpoint'), () => {
@@ -65,7 +65,7 @@ describe('50* >> Endpoint', () => {
             apiPool.attachment.fetchAttachments();
             apiPool.endpoint.fetchMethods();
 
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 501), true);
+            assert.equal($deploy.has(FQN, 501), 'warning');
         });
     });
     it($test.title(510, '[s] Endpoint is bound to application'), () => {
@@ -87,7 +87,7 @@ describe('50* >> Endpoint', () => {
             apiPool.attachment.fetchAttachments();
             apiPool.endpoint.fetchMethods();
 
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 510), true);
+            assert.equal($deploy.has(FQN, 510), 'info');
         });
     });
     it($test.title(521, '[e] Controller class is not signed as a controller or an app'), () => {
@@ -117,7 +117,7 @@ describe('50* >> Endpoint', () => {
                 apiPool.endpoint.fetchMethods();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 521));
+                assert.equal((error as Error).message, $test.code(FQN, 521));
                 return true;
             });
     });
@@ -144,7 +144,7 @@ describe('50* >> Endpoint', () => {
             apiPool.attachment.fetchAttachments();
             apiPool.endpoint.fetchMethods();
 
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 522), true);
+            assert.equal($deploy.has(FQN, 522), 'info');
         });
     });
     it($test.title(520, '[e] Controller class is not decorated as a controller'), () => {
@@ -172,7 +172,7 @@ describe('50* >> Endpoint', () => {
                 apiPool.endpoint.fetchMethods();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 520));
+                assert.equal((error as Error).message, $test.code(FQN, 520));
                 return true;
             });
     });

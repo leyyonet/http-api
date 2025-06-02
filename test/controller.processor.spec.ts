@@ -1,25 +1,11 @@
 import {strict as assert} from 'assert';
 import {describe, it} from "node:test";
-import {lifecycle, reflectionPool} from "@leyyo/core";
-import {Get, httpSigner} from "@leyyo/http";
-import {$test} from "@leyyo/common";
-import {
-    apiPool,
-    AsApp, AsContext, AsCtx,
-    AsReq,
-    AsRequest, AsRes, AsResponse,
-    Body, Controller,
-    Cookie,
-    EndpointItem,
-    Header, HttpApp, IgnoreControllers,
-    Param,
-    Queries,
-    Query
-} from "../index";
+import {reflectionPool} from "@leyyo/core";
+import {httpSigner} from "@leyyo/http";
+import {$deploy, $test} from "@leyyo/common";
 
-import {FQN_PCK} from "../internal";
-import {PropertyReflectionLike} from "@leyyo/core";
-import {List} from "@leyyo/common";
+import {apiPool, Controller, HttpApp} from "../src";
+import {FQN} from "../src/internal";
 
 describe('30* >> Controller', () => {
     it($test.title(300, '[e] Controller is already an application'), () => {
@@ -38,7 +24,7 @@ describe('30* >> Controller', () => {
                 apiPool.controller.fetchClasses();
             },
             error => {
-                assert.equal((error as Error).message, $test.code(FQN_PCK, 300));
+                assert.equal((error as Error).message, $test.code(FQN, 300));
                 return true;
             });
     });
@@ -62,7 +48,7 @@ describe('30* >> Controller', () => {
                 apiPool.application.fetchClasses();
                 apiPool.controller.fetchClasses();
 
-                assert.equal(lifecycle.hasWarning(FQN_PCK, 301), true);
+                assert.equal($deploy.has(FQN, 301), 'warning');
             });
     });
     it($test.title(302, '[w] Controller is duplicated'), () => {
@@ -87,7 +73,7 @@ describe('30* >> Controller', () => {
             apiPool.application.fetchClasses();
             apiPool.controller.fetchClasses();
 
-            assert.equal(lifecycle.hasWarning(FQN_PCK, 302), true);
+            assert.equal($deploy.has(FQN, 302), 'warning');
         });
     });
     it($test.title(303, '[s] Controller is signed'), () => {
@@ -109,7 +95,7 @@ describe('30* >> Controller', () => {
             apiPool.application.fetchClasses();
             apiPool.controller.fetchClasses();
 
-            assert.equal(lifecycle.hasInfo(FQN_PCK, 303), true);
+            assert.equal($deploy.has(FQN, 303), 'info');
         });
     });
 });
