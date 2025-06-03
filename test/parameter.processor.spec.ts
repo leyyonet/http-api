@@ -1,5 +1,4 @@
 import {strict as assert} from 'assert';
-import {describe, it} from "node:test";
 import {PropertyReflectionLike, reflectionPool} from "@leyyo/core";
 import {Get} from "@leyyo/http";
 import {$deploy, $test} from "@leyyo/common";

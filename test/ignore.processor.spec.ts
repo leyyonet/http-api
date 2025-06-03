@@ -1,5 +1,4 @@
 import {strict as assert} from 'assert';
-import {describe, it} from "node:test";
 import {$deploy, $test} from "@leyyo/common";
 
 import {apiPool, Controller, HttpApp, IgnoreControllers} from "../src";
